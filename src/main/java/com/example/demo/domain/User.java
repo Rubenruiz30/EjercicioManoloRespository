@@ -10,10 +10,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Entity representing a user.
  * 
- * @author david
+ * @author David
  * @author Rubén
- * 29 may 2026
+ * 29 May 2026
  */
 @Entity
 @Table(name = "users")
@@ -34,4 +35,8 @@ public class User {
     private boolean login;
     private String nicknameString;
     private boolean singup;
+
+    public User(long id) {
+        this.id = id;
+    }
 }

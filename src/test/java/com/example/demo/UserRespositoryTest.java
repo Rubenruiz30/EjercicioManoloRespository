@@ -11,11 +11,13 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
 
     @Autowired
@@ -72,18 +74,22 @@ class UserRepositoryTest {
 
         assertTrue(foundUser.isPresent());
 
-        assertEquals("Ruben", foundUser.get().getName());
-        assertEquals("Lopez", foundUser.get().getSurname());
-        assertEquals(800.00, foundUser.get().getBalance());
-        assertEquals("abcd", foundUser.get().getPassword());
-        assertEquals("Barcelona", foundUser.get().getResidence());
-        assertFalse(foundUser.get().isLogin());
-        assertEquals("ruben99", foundUser.get().getNicknameString());
-        assertTrue(foundUser.get().isSingup());
+        User result = foundUser.get();
+
+        assertEquals("Ruben", result.getName());
+        assertEquals("Lopez", result.getSurname());
+        assertEquals(800.00, result.getBalance());
+        assertEquals("abcd", result.getPassword());
+        assertEquals("Barcelona", result.getResidence());
+        assertFalse(result.isLogin());
+        assertEquals("ruben99", result.getNicknameString());
+        assertTrue(result.isSingup());
     }
 
     @Test
     void testFindAllUsers() {
+
+        userRepository.deleteAll();
 
         User user1 = new User(
                 null,
@@ -175,6 +181,8 @@ class UserRepositoryTest {
 
     @Test
     void testCountUsers() {
+
+        userRepository.deleteAll();
 
         User user1 = new User(
                 null,

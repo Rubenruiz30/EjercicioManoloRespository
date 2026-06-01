@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.domain.User;
 
 /**
+ * Controller used to manage user requests.
  * 
- * 
- *@author david
- *@author Rubénñ
- *27 may 2026
+ * @author David
+ * @author Rubén
+ * 27 May 2026
  */
-@RestController //  his uses is to manage the user petition
-@RequestMapping// his uses is to define the resource route
-public class Usercontroller {
-@GetMapping // is to recover a  server source
-	public String test() {
-		
-		
-		
-		return "hello";
-	}
-@GetMapping("/{id}")
-public User GetUser(/** variable in the route*/@PathVariable long id) {
-	return new User(id);
-}
+@RestController
+@RequestMapping("/users")
+public class UserController {
 
-@GetMapping("/all")
-public List<User> GetAllUsers() {
-	List<User> users = new ArrayList<User>();
+    @GetMapping
+    public String test() {
+        return "Hello";
+    }
 
-	users.add(new User(1));
-	users.add(new User(2));
-	return users;	
-}
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable long id) {
+        return new User(id);
+    }
+
+    @GetMapping("/all")
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+
+        users.add(new User(1));
+        users.add(new User(2));
+
+        return users;
+    }
 }
