@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prueba API REST</title>
+</head>
+<body>
+  <h1>Prueba rápida API REST</h1>
+  <button onclick="getProducts()">GET productos</button>
+  <button onclick="loginAdmin()">Login admin</button>
+  <pre id="output"></pre>
+
+  <script>
+    const API = 'http://localhost:8081/api';
+    let token = '';
+
+    function print(data) {
+      document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getProducts() {
+      const response = await fetch(API + '/products?sortBy=price&direction=asc');
+      print(await response.json());
+    }
+
+    async function loginAdmin() {
+      const response = await fetch(API + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'admin@email.com', password: '1234' })
+      });
+      const data = await response.json();
+      token = data.token;
+      print(data);
+    }
+  </script>
+</body>
+</html>

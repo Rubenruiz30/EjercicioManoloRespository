@@ -145,12 +145,23 @@ class UserRepositoryTest {
         savedUser.setResidence("Malaga");
         savedUser.setLogin(true);
 
-        User updatedUser = userRepository.save(savedUser);
+        userRepository.save(savedUser);
+
+        Optional<User> foundUser = userRepository.findById(savedUser.getId());
+
+        assertTrue(foundUser.isPresent());
+
+        User updatedUser = foundUser.get();
 
         assertEquals(savedUser.getId(), updatedUser.getId());
+        assertEquals("Carlos", updatedUser.getName());
+        assertEquals("Sanchez", updatedUser.getSurname());
         assertEquals(900.00, updatedUser.getBalance());
+        assertEquals("1111", updatedUser.getPassword());
         assertEquals("Malaga", updatedUser.getResidence());
         assertTrue(updatedUser.isLogin());
+        assertEquals("carlos01", updatedUser.getNicknameString());
+        assertTrue(updatedUser.isSingup());
     }
 
     @Test
@@ -172,11 +183,11 @@ class UserRepositoryTest {
 
         Long id = savedUser.getId();
 
+        assertTrue(userRepository.existsById(id));
+
         userRepository.deleteById(id);
 
-        Optional<User> deletedUser = userRepository.findById(id);
-
-        assertFalse(deletedUser.isPresent());
+        assertFalse(userRepository.existsById(id));
     }
 
     @Test
