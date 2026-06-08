@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import com.example.demo.domain.Product;
 
 public interface ProductService {
@@ -9,4 +11,6 @@ public interface ProductService {
     Product saveProduct(Product product);
 
     void deleteProduct(long id);
+
+    List<Product> getAllProducts();
 }

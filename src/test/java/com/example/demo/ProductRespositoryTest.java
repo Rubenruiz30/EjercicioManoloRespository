@@ -10,15 +10,14 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 
 import com.example.demo.domain.Product;
 import com.example.demo.repository.ProductRepository;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductRepositoryTest {
 
     @Autowired
@@ -36,7 +35,7 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                1001L
+                10
         );
 
         Product savedProduct = productRepository.save(product);
@@ -44,10 +43,10 @@ class ProductRepositoryTest {
         assertNotNull(savedProduct);
         assertNotNull(savedProduct.getId());
 
-        assertEquals(1001L, savedProduct.getId());
         assertEquals("Camiseta", savedProduct.getName());
         assertEquals("M", savedProduct.getSize());
         assertEquals("20", savedProduct.getPrice());
+        assertEquals(10, savedProduct.getStock());
     }
 
     @Test
@@ -57,21 +56,22 @@ class ProductRepositoryTest {
                 "Pantalon",
                 "L",
                 "35",
-                1002L
+                5
         );
 
-        productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
 
-        Optional<Product> foundProduct = productRepository.findById(1002L);
+        Optional<Product> foundProduct = productRepository.findById(savedProduct.getId());
 
         assertTrue(foundProduct.isPresent());
 
         Product result = foundProduct.get();
 
-        assertEquals(1002L, result.getId());
+        assertEquals(savedProduct.getId(), result.getId());
         assertEquals("Pantalon", result.getName());
         assertEquals("L", result.getSize());
         assertEquals("35", result.getPrice());
+        assertEquals(5, result.getStock());
     }
 
     @Test
@@ -81,14 +81,14 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                1003L
+                10
         );
 
         Product product2 = new Product(
                 "Zapatillas",
                 "42",
                 "60",
-                1004L
+                8
         );
 
         productRepository.save(product1);
@@ -107,7 +107,7 @@ class ProductRepositoryTest {
                 "Sudadera",
                 "M",
                 "30",
-                1005L
+                12
         );
 
         Product savedProduct = productRepository.save(product);
@@ -115,19 +115,21 @@ class ProductRepositoryTest {
         savedProduct.setName("Sudadera Nike");
         savedProduct.setSize("L");
         savedProduct.setPrice("45");
+        savedProduct.setStock(20);
 
-        productRepository.save(savedProduct);
+        Product updatedProduct = productRepository.save(savedProduct);
 
-        Optional<Product> foundProduct = productRepository.findById(1005L);
+        Optional<Product> foundProduct = productRepository.findById(updatedProduct.getId());
 
         assertTrue(foundProduct.isPresent());
 
-        Product updatedProduct = foundProduct.get();
+        Product result = foundProduct.get();
 
-        assertEquals(1005L, updatedProduct.getId());
-        assertEquals("Sudadera Nike", updatedProduct.getName());
-        assertEquals("L", updatedProduct.getSize());
-        assertEquals("45", updatedProduct.getPrice());
+        assertEquals(updatedProduct.getId(), result.getId());
+        assertEquals("Sudadera Nike", result.getName());
+        assertEquals("L", result.getSize());
+        assertEquals("45", result.getPrice());
+        assertEquals(20, result.getStock());
     }
 
     @Test
@@ -137,7 +139,7 @@ class ProductRepositoryTest {
                 "Gorra",
                 "S",
                 "15",
-                1006L
+                6
         );
 
         Product savedProduct = productRepository.save(product);
@@ -158,14 +160,14 @@ class ProductRepositoryTest {
                 "Abrigo",
                 "XL",
                 "80",
-                1007L
+                3
         );
 
         Product product2 = new Product(
                 "Zapatos",
                 "43",
                 "70",
-                1008L
+                4
         );
 
         productRepository.save(product1);

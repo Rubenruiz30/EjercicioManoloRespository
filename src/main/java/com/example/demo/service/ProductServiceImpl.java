@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +28,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }

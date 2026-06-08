@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Productos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+            color: #111827;
+            padding: 40px 20px;
+        }
+
+        .app {
+            max-width: 1150px;
+            margin: 0 auto;
+        }
+
+        .header {
+            color: white;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            margin-bottom: 18px;
+            color: #111827;
+            font-size: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            align-items: end;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 13px 18px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #111827;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 9px 13px;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            max-width: 260px;
+        }
+
+        .message {
+            display: none;
+            padding: 13px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+
+        .message.success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .message.error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: #111827;
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 25px 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+        <h1>Gestión de Productos</h1>
+        <p>Panel web conectado con tu API Spring Boot</p>
+    </header>
+
+    <section class="card">
+        <h2>Crear producto</h2>
+
+        <div id="message" class="message"></div>
+
+        <form id="productForm">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="name">Nombre</label>
+                    <input type="text" id="name" placeholder="Ej: Pantalones" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="size">Talla</label>
+                    <input type="text" id="size" placeholder="Ej: L" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="price">Precio</label>
+                    <input type="text" id="price" placeholder="Ej: 100" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" placeholder="Ej: 19" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Guardar</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2>Productos</h2>
+
+        <div class="search-box">
+            <input type="number" id="searchId" placeholder="Buscar por ID">
+            <button class="btn-secondary" onclick="searchProduct()">Buscar</button>
+            <button class="btn-primary" onclick="loadProducts()">Cargar productos</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Talla</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+
+                <tbody id="productTableBody">
+                <tr>
+                    <td colspan="6" class="empty">Pulsa “Cargar productos” para ver la lista</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const API_URL = "/products";
+
+    const form = document.getElementById("productForm");
+    const message = document.getElementById("message");
+    const tableBody = document.getElementById("productTableBody");
+
+    function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "message " + type;
+
+        setTimeout(() => {
+            message.className = "message";
+            message.textContent = "";
+        }, 3000);
+    }
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const product = {
+            name: document.getElementById("name").value,
+            size: document.getElementById("size").value,
+            price: document.getElementById("price").value,
+            stock: parseInt(document.getElementById("stock").value)
+        };
+
+        fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(product)
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Error HTTP:", response.status);
+                console.error("Respuesta:", errorText);
+                throw new Error("No se pudo guardar el producto");
+            }
+            return response.json();
+        })
+        .then(data => {
+            showMessage("Producto guardado correctamente", "success");
+            form.reset();
+            loadProducts();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showMessage("Error al guardar el producto", "error");
+        });
+    });
+
+    function loadProducts() {
+        fetch(API_URL + "/all")
+            .then(async response => {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Error HTTP:", response.status);
+                    console.error("Respuesta:", errorText);
+                    throw new Error("No se pudieron cargar los productos");
+                }
+                return response.json();
+            })
+            .then(products => {
+                tableBody.innerHTML = "";
+
+                if (!products || products.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="empty">No hay productos disponibles</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                products.forEach(product => {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td><span class="badge">${product.id ?? "-"}</span></td>
+                            <td>${product.name ?? ""}</td>
+                            <td>${product.size ?? ""}</td>
+                            <td>${product.price ?? ""}</td>
+                            <td>${product.stock ?? ""}</td>
+                            <td>
+                                <button class="btn-danger" onclick="deleteProduct(${product.id})">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                showMessage("Error al cargar productos", "error");
+            });
+    }
+
+    function searchProduct() {
+        const id = document.getElementById("searchId").value;
+
+        if (id === "") {
+            showMessage("Introduce un ID para buscar", "error");
+            return;
+        }
+
+        fetch(API_URL + "/" + id)
+            .then(async response => {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Error HTTP:", response.status);
+                    console.error("Respuesta:", errorText);
+                    throw new Error("Producto no encontrado");
+                }
+                return response.json();
+            })
+            .then(product => {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td><span class="badge">${product.id ?? "-"}</span></td>
+                        <td>${product.name ?? ""}</td>
+                        <td>${product.size ?? ""}</td>
+                        <td>${product.price ?? ""}</td>
+                        <td>${product.stock ?? ""}</td>
+                        <td>
+                            <button class="btn-danger" onclick="deleteProduct(${product.id})">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                showMessage("Producto encontrado", "success");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                showMessage("Producto no encontrado", "error");
+            });
+    }
+
+    function deleteProduct(id) {
+        if (!id || id === "undefined") {
+            showMessage("No se puede eliminar un producto sin ID", "error");
+            return;
+        }
+
+        fetch(API_URL + "/" + id, {
+            method: "DELETE"
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Error HTTP:", response.status);
+                console.error("Respuesta:", errorText);
+                throw new Error("No se pudo eliminar");
+            }
+
+            showMessage("Producto eliminado correctamente", "success");
+            loadProducts();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            showMessage("Error al eliminar el producto", "error");
+        });
+    }
+
+    loadProducts();
+</script>
+
+</body>
+</html>

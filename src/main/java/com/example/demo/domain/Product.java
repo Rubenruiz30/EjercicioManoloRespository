@@ -1,19 +1,41 @@
 package com.example.demo.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String name;
     private String size;
     private String price;
-    private long id;
+    private int stock;
 
     public Product() {
     }
 
-    public Product(String name, String size, String price, long id) {
+    public Product(String name, String size, String price, int stock) {
         this.name = name;
-        this.price = price;
         this.size = size;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -41,11 +63,11 @@ public class Product {
         this.price = price;
     }
 
-    public long getId() {
-        return id;
+    public int getStock() {
+        return stock;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }
