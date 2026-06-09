@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.example.demo.domain.Product;
 
@@ -12,5 +12,7 @@ public interface ProductService {
 
     void deleteProduct(long id);
 
-    List<Product> getAllProducts();
+    Page<Product> getAllProducts(int page, int size);
+
+    Page<Product> searchProducts(String type, String value, int page, int size);
 }

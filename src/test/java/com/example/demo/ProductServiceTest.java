@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +22,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -124,15 +129,148 @@ class ProductServiceTest {
                 2
         );
 
-        List<Product> products = Arrays.asList(product1, product2);
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Product> productPage = new PageImpl<>(List.of(product1, product2), pageable, 2);
 
-        when(productRepository.findAll()).thenReturn(products);
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(productPage);
 
-        List<Product> result = productServiceImpl.getAllProducts();
+        Page<Product> result = productServiceImpl.getAllProducts(0, 20);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("Camiseta", result.get(0).getName());
-        assertEquals("Pantalon", result.get(1).getName());
+        assertEquals(2, result.getContent().size());
+        assertEquals(2, result.getTotalElements());
+        assertEquals("Camiseta", result.getContent().get(0).getName());
+        assertEquals("Pantalon", result.getContent().get(1).getName());
+    }
+
+    @Test
+    void testSearchProductsById() {
+
+        Product product = new Product(
+                "Camiseta",
+                "M",
+                "20",
+                1
+        );
+
+        product.setId(1L);
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+
+        Page<Product> result = productServiceImpl.searchProducts("id", "1", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Camiseta", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testSearchProductsByName() {
+
+        Product product = new Product(
+                "Camiseta",
+                "M",
+                "20",
+                1
+        );
+
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Product> productPage = new PageImpl<>(List.of(product), pageable, 1);
+
+        when(productRepository.findByNameContainingIgnoreCase(any(String.class), any(Pageable.class)))
+                .thenReturn(productPage);
+
+        Page<Product> result = productServiceImpl.searchProducts("name", "camiseta", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Camiseta", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testSearchProductsBySize() {
+
+        Product product = new Product(
+                "Pantalon",
+                "L",
+                "35",
+                2
+        );
+
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Product> productPage = new PageImpl<>(List.of(product), pageable, 1);
+
+        when(productRepository.findBySizeContainingIgnoreCase(any(String.class), any(Pageable.class)))
+                .thenReturn(productPage);
+
+        Page<Product> result = productServiceImpl.searchProducts("size", "L", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Pantalon", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testSearchProductsByPrice() {
+
+        Product product = new Product(
+                "Sudadera",
+                "M",
+                "30",
+                3
+        );
+
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Product> productPage = new PageImpl<>(List.of(product), pageable, 1);
+
+        when(productRepository.findByPriceContainingIgnoreCase(any(String.class), any(Pageable.class)))
+                .thenReturn(productPage);
+
+        Page<Product> result = productServiceImpl.searchProducts("price", "30", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Sudadera", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testSearchProductsByStock() {
+
+        Product product = new Product(
+                "Gorra",
+                "S",
+                "15",
+                6
+        );
+
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Product> productPage = new PageImpl<>(List.of(product), pageable, 1);
+
+        when(productRepository.findByStock(anyInt(), any(Pageable.class)))
+                .thenReturn(productPage);
+
+        Page<Product> result = productServiceImpl.searchProducts("stock", "6", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Gorra", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testSearchProductsByInvalidStock() {
+
+        Page<Product> result = productServiceImpl.searchProducts("stock", "abc", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(0, result.getContent().size());
+    }
+
+    @Test
+    void testSearchProductsByInvalidId() {
+
+        Page<Product> result = productServiceImpl.searchProducts("id", "abc", 0, 20);
+
+        assertNotNull(result);
+        assertEquals(0, result.getContent().size());
     }
 }

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.example.demo.domain.Product;
 import com.example.demo.repository.ProductRepository;
@@ -75,7 +77,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindAllProducts() {
+    void testFindAllProductsWithPagination() {
 
         Product product1 = new Product(
                 "Camiseta",
@@ -94,10 +96,13 @@ class ProductRepositoryTest {
         productRepository.save(product1);
         productRepository.save(product2);
 
-        List<Product> products = productRepository.findAll();
+        Pageable pageable = PageRequest.of(0, 20);
+
+        Page<Product> products = productRepository.findAll(pageable);
 
         assertNotNull(products);
-        assertEquals(2, products.size());
+        assertEquals(2, products.getContent().size());
+        assertEquals(2, products.getTotalElements());
     }
 
     @Test
@@ -176,5 +181,121 @@ class ProductRepositoryTest {
         long totalProducts = productRepository.count();
 
         assertEquals(2, totalProducts);
+    }
+
+    @Test
+    void testFindByNameContainingIgnoreCase() {
+
+        Product product1 = new Product(
+                "Camiseta Azul",
+                "M",
+                "20",
+                10
+        );
+
+        Product product2 = new Product(
+                "Pantalon Negro",
+                "L",
+                "35",
+                5
+        );
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+
+        Pageable pageable = PageRequest.of(0, 20);
+
+        Page<Product> result = productRepository.findByNameContainingIgnoreCase("camiseta", pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Camiseta Azul", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testFindBySizeContainingIgnoreCase() {
+
+        Product product1 = new Product(
+                "Camiseta",
+                "M",
+                "20",
+                10
+        );
+
+        Product product2 = new Product(
+                "Pantalon",
+                "L",
+                "35",
+                5
+        );
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+
+        Pageable pageable = PageRequest.of(0, 20);
+
+        Page<Product> result = productRepository.findBySizeContainingIgnoreCase("L", pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Pantalon", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testFindByPriceContainingIgnoreCase() {
+
+        Product product1 = new Product(
+                "Camiseta",
+                "M",
+                "20",
+                10
+        );
+
+        Product product2 = new Product(
+                "Sudadera",
+                "L",
+                "35",
+                5
+        );
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+
+        Pageable pageable = PageRequest.of(0, 20);
+
+        Page<Product> result = productRepository.findByPriceContainingIgnoreCase("35", pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Sudadera", result.getContent().get(0).getName());
+    }
+
+    @Test
+    void testFindByStock() {
+
+        Product product1 = new Product(
+                "Camiseta",
+                "M",
+                "20",
+                10
+        );
+
+        Product product2 = new Product(
+                "Gorra",
+                "S",
+                "15",
+                6
+        );
+
+        productRepository.save(product1);
+        productRepository.save(product2);
+
+        Pageable pageable = PageRequest.of(0, 20);
+
+        Page<Product> result = productRepository.findByStock(6, pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("Gorra", result.getContent().get(0).getName());
     }
 }
