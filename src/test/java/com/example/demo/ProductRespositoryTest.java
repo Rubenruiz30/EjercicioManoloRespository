@@ -3,6 +3,7 @@ package com.example.demo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
@@ -31,13 +32,14 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testSaveProduct() {
+    void testSaveProductWithImageUrl() {
 
         Product product = new Product(
                 "Camiseta",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product savedProduct = productRepository.save(product);
@@ -49,6 +51,29 @@ class ProductRepositoryTest {
         assertEquals("M", savedProduct.getSize());
         assertEquals("20", savedProduct.getPrice());
         assertEquals(10, savedProduct.getStock());
+        assertEquals("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab", savedProduct.getImageUrl());
+    }
+
+    @Test
+    void testSaveProductWithoutImageUrl() {
+
+        Product product = new Product(
+                "Producto sin foto",
+                "L",
+                "15",
+                4
+        );
+
+        Product savedProduct = productRepository.save(product);
+
+        assertNotNull(savedProduct);
+        assertNotNull(savedProduct.getId());
+
+        assertEquals("Producto sin foto", savedProduct.getName());
+        assertEquals("L", savedProduct.getSize());
+        assertEquals("15", savedProduct.getPrice());
+        assertEquals(4, savedProduct.getStock());
+        assertNull(savedProduct.getImageUrl());
     }
 
     @Test
@@ -58,7 +83,8 @@ class ProductRepositoryTest {
                 "Pantalon",
                 "L",
                 "35",
-                5
+                5,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         Product savedProduct = productRepository.save(product);
@@ -74,6 +100,7 @@ class ProductRepositoryTest {
         assertEquals("L", result.getSize());
         assertEquals("35", result.getPrice());
         assertEquals(5, result.getStock());
+        assertEquals("https://images.unsplash.com/photo-1542272604-787c3835535d", result.getImageUrl());
     }
 
     @Test
@@ -83,14 +110,16 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Zapatillas",
                 "42",
                 "60",
-                8
+                8,
+                "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
         );
 
         productRepository.save(product1);
@@ -112,7 +141,8 @@ class ProductRepositoryTest {
                 "Sudadera",
                 "M",
                 "30",
-                12
+                12,
+                "https://images.unsplash.com/photo-1556821840-3a63f95609a7"
         );
 
         Product savedProduct = productRepository.save(product);
@@ -121,6 +151,7 @@ class ProductRepositoryTest {
         savedProduct.setSize("L");
         savedProduct.setPrice("45");
         savedProduct.setStock(20);
+        savedProduct.setImageUrl("https://images.unsplash.com/photo-1556821840-3a63f95609a7");
 
         Product updatedProduct = productRepository.save(savedProduct);
 
@@ -135,6 +166,7 @@ class ProductRepositoryTest {
         assertEquals("L", result.getSize());
         assertEquals("45", result.getPrice());
         assertEquals(20, result.getStock());
+        assertEquals("https://images.unsplash.com/photo-1556821840-3a63f95609a7", result.getImageUrl());
     }
 
     @Test
@@ -144,7 +176,8 @@ class ProductRepositoryTest {
                 "Gorra",
                 "S",
                 "15",
-                6
+                6,
+                "https://images.unsplash.com/photo-1521369909029-2afed882baee"
         );
 
         Product savedProduct = productRepository.save(product);
@@ -165,14 +198,16 @@ class ProductRepositoryTest {
                 "Abrigo",
                 "XL",
                 "80",
-                3
+                3,
+                "https://images.unsplash.com/photo-1539533018447-63fcce2678e3"
         );
 
         Product product2 = new Product(
                 "Zapatos",
                 "43",
                 "70",
-                4
+                4,
+                "https://images.unsplash.com/photo-1549298916-b41d501d3772"
         );
 
         productRepository.save(product1);
@@ -190,14 +225,16 @@ class ProductRepositoryTest {
                 "Camiseta Azul",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Pantalon Negro",
                 "L",
                 "35",
-                5
+                5,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         productRepository.save(product1);
@@ -210,6 +247,7 @@ class ProductRepositoryTest {
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
         assertEquals("Camiseta Azul", result.getContent().get(0).getName());
+        assertEquals("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab", result.getContent().get(0).getImageUrl());
     }
 
     @Test
@@ -219,14 +257,16 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Pantalon",
                 "L",
                 "35",
-                5
+                5,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         productRepository.save(product1);
@@ -248,14 +288,16 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Sudadera",
                 "L",
                 "35",
-                5
+                5,
+                "https://images.unsplash.com/photo-1556821840-3a63f95609a7"
         );
 
         productRepository.save(product1);
@@ -277,14 +319,16 @@ class ProductRepositoryTest {
                 "Camiseta",
                 "M",
                 "20",
-                10
+                10,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Gorra",
                 "S",
                 "15",
-                6
+                6,
+                "https://images.unsplash.com/photo-1521369909029-2afed882baee"
         );
 
         productRepository.save(product1);

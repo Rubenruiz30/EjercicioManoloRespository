@@ -17,6 +17,8 @@ public class Product {
     private String price;
     private int stock;
 
+    private String imageUrl;
+
     public Product() {
     }
 
@@ -25,6 +27,14 @@ public class Product {
         this.size = size;
         this.price = price;
         this.stock = stock;
+    }
+
+    public Product(String name, String size, String price, int stock, String imageUrl) {
+        this.name = name;
+        this.size = size;
+        this.price = price;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -47,7 +57,7 @@ public class Product {
         this.name = name;
     }
 
-    public String getSize() {
+	public String getSize() {
         return size;
     }
 
@@ -69,5 +79,13 @@ public class Product {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

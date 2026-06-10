@@ -31,10 +31,10 @@ import org.springframework.data.domain.Pageable;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    @Mock // Crea un ProductRepository falso para no usar la base de datos real.
+    @Mock
     private ProductRepository productRepository;
 
-    @InjectMocks // Crea ProductServiceImpl real e introduce dentro el ProductRepository falso.
+    @InjectMocks
     private ProductServiceImpl productServiceImpl;
 
     @Test
@@ -44,7 +44,8 @@ class ProductServiceTest {
                 "Camiseta",
                 "M",
                 "20",
-                1
+                1,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         product.setId(1L);
@@ -59,6 +60,7 @@ class ProductServiceTest {
         assertEquals("M", result.getSize());
         assertEquals("20", result.getPrice());
         assertEquals(1, result.getStock());
+        assertEquals("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab", result.getImageUrl());
     }
 
     @Test
@@ -68,14 +70,16 @@ class ProductServiceTest {
                 "Pantalon",
                 "L",
                 "35",
-                2
+                2,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         Product savedProduct = new Product(
                 "Pantalon",
                 "L",
                 "35",
-                2
+                2,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         savedProduct.setId(2L);
@@ -90,6 +94,7 @@ class ProductServiceTest {
         assertEquals("L", result.getSize());
         assertEquals("35", result.getPrice());
         assertEquals(2, result.getStock());
+        assertEquals("https://images.unsplash.com/photo-1542272604-787c3835535d", result.getImageUrl());
     }
 
     @Test
@@ -119,14 +124,16 @@ class ProductServiceTest {
                 "Camiseta",
                 "M",
                 "20",
-                1
+                1,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Product product2 = new Product(
                 "Pantalon",
                 "L",
                 "35",
-                2
+                2,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         Pageable pageable = PageRequest.of(0, 20);
@@ -150,7 +157,8 @@ class ProductServiceTest {
                 "Camiseta",
                 "M",
                 "20",
-                1
+                1,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         product.setId(1L);
@@ -162,6 +170,7 @@ class ProductServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
         assertEquals("Camiseta", result.getContent().get(0).getName());
+        assertEquals("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab", result.getContent().get(0).getImageUrl());
     }
 
     @Test
@@ -171,7 +180,8 @@ class ProductServiceTest {
                 "Camiseta",
                 "M",
                 "20",
-                1
+                1,
+                "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
         );
 
         Pageable pageable = PageRequest.of(0, 20);
@@ -194,7 +204,8 @@ class ProductServiceTest {
                 "Pantalon",
                 "L",
                 "35",
-                2
+                2,
+                "https://images.unsplash.com/photo-1542272604-787c3835535d"
         );
 
         Pageable pageable = PageRequest.of(0, 20);
@@ -217,7 +228,8 @@ class ProductServiceTest {
                 "Sudadera",
                 "M",
                 "30",
-                3
+                3,
+                "https://images.unsplash.com/photo-1556821840-3a63f95609a7"
         );
 
         Pageable pageable = PageRequest.of(0, 20);
@@ -240,7 +252,8 @@ class ProductServiceTest {
                 "Gorra",
                 "S",
                 "15",
-                6
+                6,
+                "https://images.unsplash.com/photo-1521369909029-2afed882baee"
         );
 
         Pageable pageable = PageRequest.of(0, 20);
